@@ -1,3 +1,8 @@
+# Environment files
+.env
+.env.local
+.env.production
+
 # Python
 __pycache__/
 *.py[cod]
@@ -16,64 +21,31 @@ parts/
 sdist/
 var/
 wheels/
-share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
-# Environment
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+# Data directories with sensitive content
+data/uploads/*
+!data/uploads/.gitkeep
+logs/*.log
+logs/*.txt
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
 # OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Application specific
-data/uploads/*
-!data/uploads/.gitkeep
-data/rag/*
-!data/rag/.gitkeep
-data/knowledge_base/*
-!data/knowledge_base/.gitkeep
-logs/*.log
-!logs/.gitkeep
-temp/
+# Custom GPT Config with sensitive data
+custom_gpt_config/api_auth.txt
+custom_gpt_config/api_credentials.txt
 
-# Flask
-instance/
-.webassets-cache
-
-# Testing
-.coverage
-.pytest_cache/
-.tox/
-.nox/
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-
-# Security
-*.key
-*.pem
-*.crt
-config/secrets.json
+# Temporary files
+*.tmp
+*.temp

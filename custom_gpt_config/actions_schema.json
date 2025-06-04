@@ -1,0 +1,292 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AITON-RAG Knowledge Base API",
+    "description": "API for accessing structured knowledge base through ChatGPT Custom GPT Actions. Provides intelligent search and retrieval of processed document content organized into categories for optimal AI consumption.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "AITON-RAG API Support",
+      "url": "http://localhost:5000/api-docs"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "AITON-RAG API Server (Update with your deployment URL)"
+    }
+  ],
+  "paths": {
+    "/api/v1/search": {
+      "get": {
+        "summary": "Search Knowledge Base",
+        "description": "Search the structured knowledge base with optional category filtering. Returns relevant content optimized for AI analysis and response generation.",
+        "operationId": "searchKnowledgeBase",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            },
+            "description": "Search terms to look for in the knowledge base. Use specific keywords for best results.",
+            "example": "data processing workflow"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["processes", "definitions", "analysis", "reference"]
+            },
+            "description": "Filter results by content category. Leave empty to search all categories.",
+            "example": "processes"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10
+            },
+            "description": "Maximum number of results to return (1-50)",
+            "example": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results with structured content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Indicates if the search was successful"
+                    },
+                    "query": {
+                      "type": "string",
+                      "description": "The search query that was executed"
+                    },
+                    "category": {
+                      "type": "string",
+                      "description": "Category filter applied (if any)"
+                    },
+                    "total_results": {
+                      "type": "integer",
+                      "description": "Number of results returned"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "description": "Title or heading of the content"
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "The actual content text, structured for AI consumption"
+                          },
+                          "category": {
+                            "type": "string",
+                            "description": "Content category (processes, definitions, analysis, reference)"
+                          },
+                          "source_file": {
+                            "type": "string",
+                            "description": "Original file name this content came from"
+                          },
+                          "relevance_score": {
+                            "type": "number",
+                            "description": "Relevance score (0-1) for the search query"
+                          }
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the search was performed"
+                    },
+                    "actions_metadata": {
+                      "type": "object",
+                      "description": "Metadata to help AI understand and use the response effectively"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "error": {"type": "string"},
+                    "usage_guidance": {"type": "string"}
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/knowledge-base": {
+      "get": {
+        "summary": "Get Complete Knowledge Base",
+        "description": "Retrieve the entire structured knowledge base organized by categories. Use this when you need comprehensive access to all available information.",
+        "operationId": "getKnowledgeBase",
+        "responses": {
+          "200": {
+            "description": "Complete knowledge base organized by categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "knowledge_base": {
+                      "type": "object",
+                      "properties": {
+                        "processes": {
+                          "type": "array",
+                          "description": "Step-by-step procedures, workflows, and methodologies"
+                        },
+                        "definitions": {
+                          "type": "array",
+                          "description": "Key terms, concepts, and their explanations"
+                        },
+                        "analysis": {
+                          "type": "array",
+                          "description": "Analytical insights, assessments, and evaluations"
+                        },
+                        "reference": {
+                          "type": "array",
+                          "description": "Reference materials, data, and factual information"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "actions_metadata": {
+                      "type": "object",
+                      "description": "Metadata for AI optimization"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/categories": {
+      "get": {
+        "summary": "Get Available Categories",
+        "description": "List all available content categories with descriptions. Use this to understand what types of content are available before searching.",
+        "operationId": "getCategories",
+        "responses": {
+          "200": {
+            "description": "List of available categories with descriptions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "categories": {
+                      "type": "array",
+                      "items": {"type": "string"}
+                    },
+                    "category_descriptions": {
+                      "type": "object",
+                      "properties": {
+                        "processes": {"type": "string"},
+                        "definitions": {"type": "string"},
+                        "analysis": {"type": "string"},
+                        "reference": {"type": "string"}
+                      }
+                    },
+                    "actions_metadata": {"type": "object"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "summary": "Health Check",
+        "description": "Check system health and get basic statistics about the knowledge base. Use this to verify the system is working and get current stats.",
+        "operationId": "healthCheck",
+        "responses": {
+          "200": {
+            "description": "System health status and statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "status": {"type": "string"},
+                    "timestamp": {"type": "string", "format": "date-time"},
+                    "stats": {
+                      "type": "object",
+                      "properties": {
+                        "total_processed_files": {"type": "integer"},
+                        "knowledge_base_categories": {"type": "integer"},
+                        "openai_configured": {"type": "boolean"}
+                      }
+                    },
+                    "actions_metadata": {"type": "object"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "KnowledgeItem": {
+        "type": "object",
+        "properties": {
+          "title": {"type": "string"},
+          "content": {"type": "string"},
+          "category": {"type": "string"},
+          "source_file": {"type": "string"},
+          "relevance_score": {"type": "number"}
+        }
+      },
+      "APIResponse": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "timestamp": {"type": "string", "format": "date-time"},
+          "actions_metadata": {"type": "object"}
+        }
+      }
+    }
+  }
+}

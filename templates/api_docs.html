@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - AITON-RAG</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-brain me-2"></i>
+                AITON-RAG
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">
+                    <i class="fas fa-upload me-1"></i>
+                    Upload
+                </a>
+                <a class="nav-link" href="/dashboard">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Dashboard
+                </a>
+                <a class="nav-link active" href="/api-docs">
+                    <i class="fas fa-book me-1"></i>
+                    API Docs
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <h1 class="display-6 fw-bold">
+                    <i class="fas fa-book me-3 text-primary"></i>
+                    API Documentation
+                </h1>
+                <p class="lead">REST API designed for ChatGPT Custom GPT Actions integration</p>
+            </div>
+            <div class="col-lg-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6 class="card-title">Quick Links</h6>
+                        <div class="d-grid gap-2">
+                            <a href="/openapi.json" class="btn btn-outline-primary btn-sm" target="_blank">
+                                <i class="fas fa-download me-1"></i>
+                                OpenAPI JSON
+                            </a>
+                            <a href="/api/v1/health" class="btn btn-outline-success btn-sm" target="_blank">
+                                <i class="fas fa-heartbeat me-1"></i>
+                                Health Check
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Base URL -->
+        <div class="alert alert-info">
+            <h6><i class="fas fa-info-circle me-2"></i>Base URL</h6>
+            <code>{{ spec.servers[0].url }}</code>
+        </div>
+
+        <!-- Custom GPT Actions Setup -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-robot me-2"></i>
+                    Custom GPT Actions Setup
+                </h5>
+            </div>
+            <div class="card-body">
+                <p>To integrate this API with ChatGPT Custom GPT Actions, follow these steps:</p>
+                <ol>
+                    <li class="mb-2">
+                        <strong>Create a Custom GPT</strong> in ChatGPT
+                    </li>
+                    <li class="mb-2">
+                        <strong>Add Actions</strong> by importing the OpenAPI specification:
+                        <div class="mt-2">
+                            <a href="/openapi.json" class="btn btn-primary btn-sm" target="_blank">
+                                <i class="fas fa-download me-1"></i>
+                                Download OpenAPI Spec
+                            </a>
+                        </div>
+                    </li>
+                    <li class="mb-2">
+                        <strong>Configure Authentication</strong> (if required) - Currently uses no authentication
+                    </li>
+                    <li>
+                        <strong>Test the integration</strong> using the endpoints below
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Endpoints -->
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mb-4">API Endpoints</h3>
+            </div>
+        </div>
+
+        <!-- Search Endpoint -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <span class="badge bg-primary me-2">GET</span>
+                        /api/v1/search
+                    </h5>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="testEndpoint('/api/v1/search?query=example')">
+                        <i class="fas fa-play me-1"></i>
+                        Test
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Search the structured knowledge base with optional category filtering. Optimized for AI consumption.</p>
+                
+                <h6>Parameters</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>query</code></td>
+                                <td>string</td>
+                                <td class="text-success">Yes</td>
+                                <td>Search terms to look for in the knowledge base</td>
+                            </tr>
+                            <tr>
+                                <td><code>category</code></td>
+                                <td>string</td>
+                                <td class="text-muted">No</td>
+                                <td>Filter by category: processes, definitions, analysis, reference</td>
+                            </tr>
+                            <tr>
+                                <td><code>limit</code></td>
+                                <td>integer</td>
+                                <td class="text-muted">No</td>
+                                <td>Maximum results (1-50, default: 10)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h6>Example Request</h6>
+                <pre><code class="language-bash">curl "{{ spec.servers[0].url }}/api/v1/search?query=process&category=processes&limit=5"</code></pre>
+
+                <h6>Example Response</h6>
+                <pre><code class="language-json">{
+  "success": true,
+  "query": "process",
+  "category": "processes",
+  "total_results": 3,
+  "results": [
+    {
+      "title": "Data Processing Workflow",
+      "content": "Step-by-step process for handling data...",
+      "category": "processes",
+      "source_file": "workflow.pdf",
+      "relevance_score": 0.95
+    }
+  ],
+  "timestamp": "2025-06-04T10:30:00Z",
+  "actions_metadata": {
+    "response_type": "search_results",
+    "content_optimized": true
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Knowledge Base Endpoint -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <span class="badge bg-primary me-2">GET</span>
+                        /api/v1/knowledge-base
+                    </h5>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="testEndpoint('/api/v1/knowledge-base')">
+                        <i class="fas fa-play me-1"></i>
+                        Test
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Retrieve the complete structured knowledge base organized by categories.</p>
+                
+                <h6>Example Response</h6>
+                <pre><code class="language-json">{
+  "success": true,
+  "knowledge_base": {
+    "processes": [
+      {
+        "title": "Data Processing Workflow",
+        "content": "Detailed process description...",
+        "source_file": "workflow.pdf"
+      }
+    ],
+    "definitions": [
+      {
+        "title": "Key Terms",
+        "content": "Important definitions...",
+        "source_file": "glossary.docx"
+      }
+    ]
+  },
+  "timestamp": "2025-06-04T10:30:00Z",
+  "actions_metadata": {
+    "response_type": "complete_knowledge_base",
+    "content_optimized": true
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Categories Endpoint -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <span class="badge bg-primary me-2">GET</span>
+                        /api/v1/categories
+                    </h5>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="testEndpoint('/api/v1/categories')">
+                        <i class="fas fa-play me-1"></i>
+                        Test
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Get available content categories with descriptions.</p>
+                
+                <h6>Example Response</h6>
+                <pre><code class="language-json">{
+  "success": true,
+  "categories": ["processes", "definitions", "analysis", "reference"],
+  "category_descriptions": {
+    "processes": "Step-by-step procedures, workflows, and methodologies",
+    "definitions": "Key terms, concepts, and their explanations",
+    "analysis": "Analytical insights, assessments, and evaluations",
+    "reference": "Reference materials, data, and factual information"
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Health Check Endpoint -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <span class="badge bg-success me-2">GET</span>
+                        /api/v1/health
+                    </h5>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="testEndpoint('/api/v1/health')">
+                        <i class="fas fa-play me-1"></i>
+                        Test
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Check system health and get basic statistics.</p>
+                
+                <h6>Example Response</h6>
+                <pre><code class="language-json">{
+  "success": true,
+  "status": "healthy",
+  "timestamp": "2025-06-04T10:30:00Z",
+  "stats": {
+    "total_processed_files": 15,
+    "knowledge_base_categories": 4,
+    "openai_configured": true
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div id="testResults" class="card d-none">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-flask me-2"></i>
+                    Test Results
+                </h6>
+            </div>
+            <div class="card-body">
+                <pre id="testOutput"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        async function testEndpoint(endpoint) {
+            const resultsDiv = document.getElementById('testResults');
+            const outputPre = document.getElementById('testOutput');
+            
+            try {
+                resultsDiv.classList.remove('d-none');
+                outputPre.textContent = 'Testing endpoint: ' + endpoint + '\n\nLoading...';
+                
+                const response = await fetch(endpoint);
+                const data = await response.json();
+                
+                const result = {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: Object.fromEntries(response.headers.entries()),
+                    data: data
+                };
+                
+                outputPre.textContent = JSON.stringify(result, null, 2);
+                
+                // Scroll to results
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                outputPre.textContent = 'Error testing endpoint:\n' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
